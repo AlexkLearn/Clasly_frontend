@@ -13,7 +13,6 @@ import routerProvider, {
   UnsavedChangesNotifier,
   DocumentTitleHandler,
 } from "@refinedev/react-router";
-import { dataProvider } from "./providers/data";
 import { ErrorComponent } from "./components/refine-ui/layout/error-component";
 import { Layout } from "./components/refine-ui/layout/layout";
 import { Header } from "./components/refine-ui/layout/header";
@@ -25,6 +24,7 @@ import Dashboard from "./pages/Dashboard";
 import { BookOpen, Home } from "lucide-react";
 import SubjectsList from "./pages/subjects/list";
 import SubjectsCreate from "./pages/subjects/create";
+import { dataprovider } from "./providers/data";
 
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
         <ThemeProvider>
           <DevtoolsProvider>
             <Refine
-              dataProvider={dataProvider}
+              dataProvider={dataprovider}
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               options={{
