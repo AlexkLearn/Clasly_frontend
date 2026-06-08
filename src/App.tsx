@@ -24,7 +24,7 @@ import Dashboard from "./pages/Dashboard";
 import { BookOpen, Home } from "lucide-react";
 import SubjectsList from "./pages/subjects/list";
 import SubjectsCreate from "./pages/subjects/create";
-import { dataprovider } from "./providers/data";
+import { dataProvider } from "./providers/data";
 
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
         <ThemeProvider>
           <DevtoolsProvider>
             <Refine
-              dataProvider={dataprovider}
+              dataProvider={dataProvider}
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               options={{
