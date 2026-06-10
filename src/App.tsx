@@ -20,11 +20,13 @@ import { useNotificationProvider } from "./components/refine-ui/notification/use
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import "./App.css";
+import { dataProvider } from "./providers/data";
 import Dashboard from "./pages/Dashboard";
-import { BookOpen, Home } from "lucide-react";
+import { BookOpen, GraduationCap, Home } from "lucide-react";
 import SubjectsList from "./pages/subjects/list";
 import SubjectsCreate from "./pages/subjects/create";
-import { dataProvider } from "./providers/data";
+import ClassesList from "./pages/classes/list";
+import ClassesCreate from "./pages/classes/create";
 
 
 function App() {
@@ -48,14 +50,20 @@ function App() {
                 {
                   name: 'dashboard',
                   list: '/',
-                  meta: { label: 'home', icon: <Home /> }
+                  meta: { label: 'Home', icon: <Home /> }
                 },
                 {
                   name: 'subjects',
                   list: '/subjects',
                   create: '/subjects/create',
-                  meta: { label: 'subjects', icon: <BookOpen /> }
-                }
+                  meta: { label: 'Subjects', icon: <BookOpen /> }
+                },
+                {
+                  name: 'classes',
+                  list: '/classes',
+                  create: '/classes/create',
+                  meta: { label: 'Classes', icon: <GraduationCap /> }
+                },
               ]}
             >
               <Routes>
@@ -66,10 +74,17 @@ function App() {
                   </Layout>
                 }>
                   <Route path="/" element={ <Dashboard /> } />
+
                   <Route path="subjects">
                     <Route index element={ <SubjectsList /> } />
                     <Route path="create" element={ <SubjectsCreate /> } />
                   </Route>
+
+                  <Route path="classes">
+                    <Route index element={ <ClassesList /> } />
+                    <Route path="create" element={ <ClassesCreate /> } />
+                  </Route>
+
                 </Route>
               </Routes>
               <Toaster />
