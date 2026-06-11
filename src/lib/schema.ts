@@ -23,10 +23,25 @@ export const subjectSchema = z.object({
 });
 
 const scheduleSchema = z.object({
-    day: z.string().min(1, "Day is required"),
-    startTime: z.string().min(1, "Start time is required"),
-    endTime: z.string().min(1, "End time is required"),
-});
+    day: z.enum(
+        [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+        ],
+        { required_error: "Day is required" }
+    ),
+    startTime: z.string()
+      .min(1, "Start time is required")
+      .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Start time must be in HH:MM format"),
+    endTime: z.string()
+      .min(1, "End time is required")
+      .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "End time must be in HH:MM format"),
+    }).refine(
+    (data) => data.endTime > data.startTime,
+    {
+      message: "End time must be after start time",
+      path: ["endTime"],
+    }
+);
 
 export const classSchema = z.object({
     name: z

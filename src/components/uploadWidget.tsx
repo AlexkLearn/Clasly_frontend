@@ -63,18 +63,8 @@ export default function UploadWidget ({
 
     if (initializeWidget()) return;
 
-    const MAX_RETRIES = 30;  
-    let retryCount = 0; 
-
     const intervalId = window.setInterval(
       () => {
-        retryCount++;
-        if (retryCount >= MAX_RETRIES) {
-          console.error('Cloudinary widget failed to load after maximum retries');
-          window.clearInterval(intervalId);
-          return;
-        }
-
         if (initializeWidget()) {
           window.clearInterval(intervalId)
         }
