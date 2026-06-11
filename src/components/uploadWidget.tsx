@@ -12,7 +12,7 @@ export default function UploadWidget ({
   disabled = false
 }: UploadWidgetProps) {
   const widgetRef = useRef<CloudinaryWidget | null>(null);
-  const onChangeref = useRef(onChange);
+  const onChangeRef = useRef(onChange);
 
   const [ preview, setPreview ] = useState<UploadWidgetValue | null>(value);
 
@@ -21,7 +21,7 @@ export default function UploadWidget ({
   }, [value])
 
   useEffect(() => {
-    onChangeref.current = onChange;
+    onChangeRef.current = onChange;
   }, [onChange])
 
   useEffect(() => {
@@ -40,6 +40,11 @@ export default function UploadWidget ({
           clientAllowedFormats: ['png', 'jpg', 'jpeg', 'webp'] 
         },
         (error, result) => {
+          if (error) {
+            console.error('Upload error:', error);
+            return;
+          }
+
           if (!error && result.event === 'success') {
             const payload: UploadWidgetValue = {
               url: result.info.secure_url,
@@ -48,7 +53,7 @@ export default function UploadWidget ({
 
             setPreview(payload)
 
-            onChangeref.current?.(payload)
+            onChangeRef.current?.(payload)
           }
         }
       )
@@ -58,8 +63,18 @@ export default function UploadWidget ({
 
     if (initializeWidget()) return;
 
+    const MAX_RETRIES = 30;  
+    let retryCount = 0; 
+
     const intervalId = window.setInterval(
       () => {
+        retryCount++;
+        if (retryCount >= MAX_RETRIES) {
+          console.error('Cloudinary widget failed to load after maximum retries');
+          window.clearInterval(intervalId);
+          return;
+        }
+
         if (initializeWidget()) {
           window.clearInterval(intervalId)
         }
@@ -103,7 +118,7 @@ export default function UploadWidget ({
                 <UploadCloud className='icon' />
                 <div>
                   <p>Click to upload photo</p>
-                  <p>PNG, JPG up to 5MB</p>
+                  <p>PNG, JPG, JPEG, WEBP up to 5MB</p>
                 </div>
               </div>
             </div>
