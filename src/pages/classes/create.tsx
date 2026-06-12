@@ -1,9 +1,12 @@
 import {CreateView} from "@/components/refine-ui/views/create-view.tsx";
 import {Breadcrumb} from "@/components/refine-ui/layout/breadcrumb.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {useBack} from "@refinedev/core";
+import {useBack, useList} from "@refinedev/core";
 import {Separator} from "@/components/ui/separator.tsx";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
+import {
+	Card, CardContent,
+	CardHeader, CardTitle
+} from "@/components/ui/card.tsx"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "@refinedev/react-hook-form"
 import {classSchema} from "@/lib/schema.ts";
@@ -21,8 +24,8 @@ import { Input } from "@/components/ui/input"
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Loader2} from "lucide-react";
-import { subjects, teachers } from "@/constants";
 import UploadWidget from "@/components/uploadWidget";
+import { Subject, User } from "@/types";
 
 
 export default function ClassesCreate () {
@@ -37,6 +40,7 @@ export default function ClassesCreate () {
   });
 
   const {
+		refineCore: { onFinish },
 		handleSubmit,
 		formState: { isSubmitting, errors },
 		control,
@@ -44,12 +48,37 @@ export default function ClassesCreate () {
 
   const onSubmit = async (values: z.infer<typeof classSchema>) => {
 		try {
-			console.log(values);
+			await onFinish(values)
 		}
 		catch (e) {
 			console.error(`Error creating class: ${e}`);
 		}
 	};
+
+	const { query: subjectsQuery } = useList<Subject>({
+		resource: 'subjects',
+		pagination: {
+			pageSize: 100
+		}
+	})
+
+	const { query: teachersQuery } = useList<User>({
+		resource: 'users',
+		filters: [{
+			field: 'role',
+			operator: 'eq',
+			value: 'teacher'
+		}],
+		pagination: {
+			pageSize: 100
+		}
+	})
+
+	const subjects = subjectsQuery?.data?.data || [];
+	const subjectsLoading = subjectsQuery.isLoading;
+
+	const teachers = teachersQuery?.data?.data || [];
+	const teachersLoading = teachersQuery.isLoading;
 
 	const bannerPublicId = form.watch("bannerCldPubId");
 
@@ -182,6 +211,7 @@ export default function ClassesCreate () {
 														value={
 															field.value?.toString()
 														}
+														disabled={ subjectsLoading }
 													>
 														<FormControl>
 															<SelectTrigger className="w-full">
@@ -223,6 +253,7 @@ export default function ClassesCreate () {
 													<Select
 														onValueChange={field.onChange}
 														value={field.value}
+														disabled={ teachersLoading }
 													>
 														<FormControl>
 															<SelectTrigger className="w-full">
@@ -342,6 +373,7 @@ export default function ClassesCreate () {
 									type="submit" 
 									size="lg" 
 									className="w-full"
+									disabled={isSubmitting}
 								>
 									{
 										isSubmitting
