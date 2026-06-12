@@ -373,6 +373,7 @@ export default function ClassesCreate () {
 									type="submit" 
 									size="lg" 
 									className="w-full"
+									disabled={isSubmitting}
 								>
 									{
 										isSubmitting
